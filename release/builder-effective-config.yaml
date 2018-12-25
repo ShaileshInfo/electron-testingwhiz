@@ -1,0 +1,34 @@
+directories:
+  output: release
+  buildResources: dist
+appId: com.sp.test
+productName: TestingWhiz
+copyright: Copyright © year TestingWhiz
+publish:
+  - provider: github
+files:
+  - filter:
+      - '**/*'
+      - dist/**/*
+asar: true
+mac:
+  target:
+    - dmg
+    - zip
+dmg:
+  contents:
+    - x: 110
+      'y': 150
+    - x: 240
+      'y': 150
+      type: link
+      path: /Applications
+linux:
+  target:
+    - AppImage
+    - deb
+win:
+  target:
+    - NSIS
+  verifyUpdateCodeSignature: false
+electronVersion: 3.0.13
