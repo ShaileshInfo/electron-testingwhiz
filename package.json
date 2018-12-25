@@ -7,7 +7,7 @@
   "main": "main.js",
   "repository": {
     "type":"git",
-    "url":"git@github.com:UmeshVyas/electron-updater.git"
+    "url":"git@github.com:UmeshVyas/electron-testingwhiz.git"
   },
   "scripts": {
     "ng": "ng",   
@@ -21,7 +21,7 @@
     "electron-build": "npm run build:prod && electron .",
 
     "pack": "electron-builder --dir",
-    "dist": "electron-builder",
+    "dist": "npm run build:prod && electron-builder",
     "postinstall": "electron-builder install-app-deps",
     "release": "build",
    
