@@ -1,4 +1,4 @@
-const { app, BrowserWindow,ipcMain,dialog } = require('electron')
+const { app, BrowserWindow,ipcMain } = require('electron')
 const path = require('path')
 const url = require('url')
 
@@ -80,25 +80,25 @@ app.on('ready', function() {
 // }, 5000)
 
 // when the update has been downloaded and is ready to be installed, notify the BrowserWindow
- autoUpdater.on('update-downloaded', (event, releaseNotes, releaseName) => {
+ //autoUpdater.on('update-downloaded', (event, releaseNotes, releaseName) => {
 
   //win.webContents.send('updateReady')
-   const dialogOpts = {
-    type: 'info',
-    buttons: ['Restart', 'Later'],
-    title: 'Application Update',
-     message: process.platform === 'win32' ? releaseNotes : releaseName,
-     detail: 'A new version has been downloaded. Restart the application to apply the updates.'
-   }
+  //  const dialogOpts = {
+  //   type: 'info',
+  //   buttons: ['Restart', 'Later'],
+  //   title: 'Application Update',
+  //    message: process.platform === 'win32' ? releaseNotes : releaseName,
+  //    detail: 'A new version has been downloaded. Restart the application to apply the updates.'
+  //  }
 
-   dialog.showMessageBox(dialogOpts, (response) => {
-    if (response === 0) autoUpdater.quitAndInstall()
-   })
- })
+  //  dialog.showMessageBox(dialogOpts, (response) => {
+  //   if (response === 0) autoUpdater.quitAndInstall()
+  //  })
+ //})
 
-  // autoUpdater.on('update-downloaded', (info) => {
-  //     win.webContents.send('updateReady')
-  // });
+   autoUpdater.on('update-downloaded', (info) => {
+       sendStatusToWindow('update-downloaded');
+   });
 
 // when receiving a quitAndInstall signal, quit and install the new version ;)
  ipcMain.on("quitAndInstall", (event, arg) => {
