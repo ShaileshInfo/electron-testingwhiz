@@ -6,6 +6,10 @@ const {autoUpdater} = require("electron-updater");
 const log = require('electron-log');
 const isDev = require('electron-is-dev');
 
+const sendStatusToWindow = (data) => {
+  win.webContents.send('message', data)
+}
+
 if (isDev) {
 	console.log('Running in development');
 } else {
@@ -56,38 +60,44 @@ function createWindow () {
 // when the app is loaded create a BrowserWindow and check for updates
 app.on('ready', function() {
   createWindow()
- // autoUpdater.checkForUpdatesAndNotify();
+  autoUpdater.checkForUpdatesAndNotify()
+
+  win.webContents.on('did-finish-load', () => {
+    win.webContents.send('version', app.getVersion())
+  })
+
 } )
 
-setInterval(() => {
-  if (!isDev) {
-    log.info("Not a DEV env");
-  autoUpdater.checkForUpdatesAndNotify();  
+// setInterval(() => {
+//   if (!isDev) {
+//     log.info("Not a DEV env");
+//   autoUpdater.checkForUpdatesAndNotify();  
 
-  } else {
-    log.info("Its a DEV env");
-  }
-}, 5000)
+//   } else {
+//     log.info("Its a DEV env");
+//   }
+// }, 5000)
 
 // when the update has been downloaded and is ready to be installed, notify the BrowserWindow
-// autoUpdater.on('update-downloaded', (event, releaseNotes, releaseName) => {
-//   confirm('update-downloaded')
-//   const dialogOpts = {
-//     type: 'info',
-//     buttons: ['Restart', 'Later'],
-//     title: 'Application Update',
-//     message: process.platform === 'win32' ? releaseNotes : releaseName,
-//     detail: 'A new version has been downloaded. Restart the application to apply the updates.'
-//   }
+ autoUpdater.on('update-downloaded', (event, releaseNotes, releaseName) => {
 
-//   dialog.showMessageBox(dialogOpts, (response) => {
-//     if (response === 0) autoUpdater.quitAndInstall()
-//   })
-// })
+  //win.webContents.send('updateReady')
+   const dialogOpts = {
+    type: 'info',
+    buttons: ['Restart', 'Later'],
+    title: 'Application Update',
+     message: process.platform === 'win32' ? releaseNotes : releaseName,
+     detail: 'A new version has been downloaded. Restart the application to apply the updates.'
+   }
 
-  autoUpdater.on('update-downloaded', (info) => {
-      win.webContents.send('updateReady')
-  });
+   dialog.showMessageBox(dialogOpts, (response) => {
+    if (response === 0) autoUpdater.quitAndInstall()
+   })
+ })
+
+  // autoUpdater.on('update-downloaded', (info) => {
+  //     win.webContents.send('updateReady')
+  // });
 
 // when receiving a quitAndInstall signal, quit and install the new version ;)
  ipcMain.on("quitAndInstall", (event, arg) => {
@@ -97,10 +107,7 @@ setInterval(() => {
 autoUpdater.on('checking-for-update', () => {
   sendStatusToWindow('Checking for update...');
 })
-autoUpdater.on('update-available', (ev, info) => {
-  win.webContents.on('did-finish-load', () => {
-    win.webContents.send('version', info.getVersion())
-  })
+autoUpdater.on('update-available', (ev, info) => {  
   sendStatusToWindow('Update available.');
 })
 autoUpdater.on('update-not-available', (ev, info) => {
@@ -117,10 +124,7 @@ autoUpdater.on('download-progress', (ev, progressObj) => {
 //   sendStatusToWindow('Update downloaded; will install in 5 seconds');
 // });
 
-function sendStatusToWindow(text) {
-  log.info(text);
-  win.webContents.send('message', text);
-}
+
 
 // Quit when all windows are closed.
 app.on('window-all-closed', function () {

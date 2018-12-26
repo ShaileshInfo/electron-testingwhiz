@@ -1,40 +1,16 @@
 
-  <script>
-        const ipcRenderer = require('electron').ipcRenderer;
-        // wait for an updateReady message
-        ipcRenderer.on('updateReady', function(event, text) {
-            // changes the text of the button
-            var container = document.getElementById('ready');
-            container.innerHTML = "new version ready!";
-        })
+<div class="w3-container">
+  <p>
+      Current version: <span id="version"></span>
+    </p>
 
-        ipcRenderer.on('version', (event, text) => {
-           var container = document.getElementById('version');
-        container.innerText = text;
-        })
-
-        ipcRenderer.on('message', (event, text) => {
-          var container = document.getElementById('messages');
-          let message = document.createElement('div')
-          message.innerHTML = text
-          container.appendChild(message)
-        })
-
-        ipcRenderer.on('download-progress', (event, text) => {
-           var progressBar = document.getElementById('progressBar');
-         progressBar.style.width = `${text}%`
-        })
-        
-
-</script>
-
-    Version::> <span id="version"></span>
-    <!-- the button onClick sends a quitAndInstall message to the electron main process -->
-    <button id="ready" onClick="ipcRenderer.send('quitAndInstall')">no updates ready</button>
     <div id="messages" style="color:cyan"></div>
+
     <div class="w3-light-grey">
       <div class="w3-blue" style="height:24px;width:0%" id="progressBar"></div>
     </div>
+
+  </div>
 
 <!--The content below is only a placeholder and can be replaced.-->
 <div style="text-align:center">
@@ -69,3 +45,6 @@
 <img src="assets/icons/mantis.png" alt="Image not display"/>      <span *ngIf="this.result > 0"> Result: {{this.result}} </span>
 </div>
 
+<script>
+    require('/assets/renderer')
+  </script>
