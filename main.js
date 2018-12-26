@@ -56,13 +56,14 @@ function createWindow () {
 // when the app is loaded create a BrowserWindow and check for updates
 app.on('ready', function() {
   createWindow()
- // autoUpdater.checkForUpdates();
+ // autoUpdater.checkForUpdatesAndNotify();
 } )
 
 setInterval(() => {
   if (!isDev) {
     log.info("Not a DEV env");
-  autoUpdater.checkForUpdates()
+  autoUpdater.checkForUpdatesAndNotify();  
+
   } else {
     log.info("Its a DEV env");
   }
@@ -84,9 +85,9 @@ setInterval(() => {
 //   })
 // })
 
-//  autoUpdater.on('update-downloaded', (info) => {
-//      win.webContents.send('updateReady')
-//  });
+  autoUpdater.on('update-downloaded', (info) => {
+      win.webContents.send('updateReady')
+  });
 
 // when receiving a quitAndInstall signal, quit and install the new version ;)
  ipcMain.on("quitAndInstall", (event, arg) => {
@@ -97,6 +98,9 @@ autoUpdater.on('checking-for-update', () => {
   sendStatusToWindow('Checking for update...');
 })
 autoUpdater.on('update-available', (ev, info) => {
+  win.webContents.on('did-finish-load', () => {
+    win.webContents.send('version', info.getVersion())
+  })
   sendStatusToWindow('Update available.');
 })
 autoUpdater.on('update-not-available', (ev, info) => {
@@ -106,11 +110,12 @@ autoUpdater.on('error', (ev, err) => {
   sendStatusToWindow('Error in auto-updater.');
 })
 autoUpdater.on('download-progress', (ev, progressObj) => {
-  sendStatusToWindow('Download progress...');
+  //sendStatusToWindow('Download progress...');
+  win.webContents.send('download-progress', progressObj.percent)
 })
-autoUpdater.on('update-downloaded', (ev, info) => {
-  sendStatusToWindow('Update downloaded; will install in 5 seconds');
-});
+// autoUpdater.on('update-downloaded', (ev, info) => {
+//   sendStatusToWindow('Update downloaded; will install in 5 seconds');
+// });
 
 function sendStatusToWindow(text) {
   log.info(text);
