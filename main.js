@@ -97,7 +97,7 @@ autoUpdater.on('checking-for-update', () => {
   sendStatusToWindow('Checking for update...');
 })
 autoUpdater.on('update-available', (ev, info) => {
-  log.info('verson::: '+info.version);
+  log.info('verson::: '+info);
   
   sendStatusToWindow('Update available.');
 })
