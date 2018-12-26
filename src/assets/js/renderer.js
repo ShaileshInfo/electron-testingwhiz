@@ -1,3 +1,4 @@
+console.log('ja called----------')
 const { ipcRenderer } = require('electron');
 
 const select = selector => document.querySelector(selector)
