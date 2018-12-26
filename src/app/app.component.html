@@ -8,7 +8,7 @@
             container.innerHTML = "new version ready!";
         })
     </script>
-    Version::> <span id="version"></span>
+    Version::#> <span id="version"></span>
     <!-- the button onClick sends a quitAndInstall message to the electron main process -->
     <button id="ready" onClick="ipcRenderer.send('quitAndInstall')">no updates ready</button>
 
