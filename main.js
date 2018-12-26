@@ -1,10 +1,11 @@
-const { app, BrowserWindow,ipcMain } = require('electron')
+const { app, BrowserWindow,ipcMain,dialog } = require('electron')
 const path = require('path')
 const url = require('url')
 
 const {autoUpdater} = require("electron-updater");
 const log = require('electron-log');
 const isDev = require('electron-is-dev');
+
 
 const sendStatusToWindow = (data) => {
   win.webContents.send('message', data)
